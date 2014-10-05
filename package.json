@@ -1,0 +1,38 @@
+{
+  "name": "geoinwiz",
+  "description": "Geo Inv Visualization",
+  "version": "0.0.0",
+  "homepage": "https://github.com/sahilkabra/geoinwiz",
+  "author": {
+    "name": "sahilkabra",
+    "email": "sahil.kabra@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sahilkabra/geoinwiz.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/sahilkabra/geoinwiz/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "bluebird": "^2.3.4",
+    "express": "^4.9.5",
+    "mongodb": "^1.4.18",
+    "morgan": "^1.3.2",
+    "socket.io": "^1.1.0"
+  },
+  "devDependencies": {
+    "bluebird": "^2.3.4",
+    "chai": "^1.9.2",
+    "chai-as-promised": "^4.1.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-jshint": "~0.6.0",
+    "mocha": "latest",
+    "supertest": "^0.14.0"
+  },
+  "keywords": []
+}
