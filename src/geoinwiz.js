@@ -25,7 +25,14 @@ geoinwiz.getNotificationDetails = function (request, response, next) {
 };
 
 geoinwiz.updateDevice = function (request, response, next) {
-	geoinvmodel.updateDevice(request.userid, request.params.notificationid, request.params.deviceid);
+	geoinvmodel.updateDevice(request.userid, request.params.notificationid, request.body.deviceid)
+	.then(function(data) {
+		response.json(data);
+	})
+	.catch(function(err) {
+		console.dir(err);
+		response.status(500).json(err);
+	});
 };
 
 geoinwiz.markNotificationAsRead = function(request, response, next) {
@@ -44,7 +51,7 @@ geoinwiz.markNotificationAsRead = function(request, response, next) {
 geoinwiz.updateNotificationStatus = function (request, response, next) {
 	if (!request.body.status) next();
 	else {
-		getinvmodel.updateNotificationStatus(request.params.userid, request.params.notificationid, request.body.status);
+		geoinvmodel.updateNotificationStatus(request.params.userid, request.params.notificationid, request.body.status)
 		.then(function(data) {
 			response.json(data);
 		})

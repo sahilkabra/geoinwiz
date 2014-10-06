@@ -33,27 +33,90 @@ describe('The geo inv REST API', function() {
 		);
 	});
 	it('updates notification read status', function(done) {
-		getInvRestApi.post('/notifications/1')
+		geoInvRESTApi.post('/notifications/1')
 		.send({'read': 'true'})
 		.expect(200)
 		.end(function(err, response) {
-			if (err) done(err);
-			done();
+			if (err)  done(err);
+			else {
+				geoInvRESTApi.get('/notifications/1')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function(err, response) {
+						if (err) done(err);
+						else {
+							expect(response.body).to.be.defined;
+							expect(response.body[0]).to.have.property('read', true);
+							done();
+						}
+					}
+				);
+			}
 		});
 	});
-	xit('updates device status', function() {
+	it('updates device status', function() {
+		geoInvRESTApi.post('/notifications/1/device/1')
+		.send({'status': 'complete'})
+		.expect(200)
+		.end(function(err, response) {
+			expect(response.status(200));
+			if (err)  done(err);
+			else {
+				geoInvRESTApi.get('/notifications/1/device/1')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function(err, response) {
+						var deviceIndex = 0;
+						if (err) done(err);
+						else {
+							expect(response.body).to.be.defined;
+							for (deviceIndex = 0; deviceIndex < response.body.length; deviceIndex++) {
+								if(response.body[deviceIndex]['_id'] === 1) {
+									expect(response.body[deviceIndex]).to.have.property('status', 'complete');
+									done();
+								}
+							}
+						}
+					}
+				);
+			}
+		});
 	});
 	it('returns details of notification when lat and lon are passed', function(done) {
 		geoInvRESTApi.get('/notifications/1?radius=1000&lat=40.76&lng=-73.97')
 			.expect('Content-Type', /json/)
+			.expect(200)
 			.end(function(err, response) {
 				if (err) done(err);
-				expect(response.status).to.equal(200);
-				expect(response.body).to.be.defined;
-				expect(response.body[0]).to.have.property('devices');
-				expect(response.body[0].devices[0]).to.have.property('type');
-				done();
+				else {
+					expect(response.body).to.be.defined;
+					expect(response.body[0]).to.have.property('devices');
+					expect(response.body[0].devices[0]).to.have.property('type');
+					done();
+				}
 			}
 		);
+	});
+	it('updates notification status', function() {
+		geoInvRESTApi.post('/notifications/1')
+		.send({'status': 'complete'})
+		.expect(200)
+		.end(function(err, response) {
+			if (err)  done(err);
+			else {
+				geoInvRESTApi.get('/notifications/1')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function(err, response) {
+						if (err) done(err);
+						else {
+							expect(response.body).to.be.defined;
+							expect(response.body).to.have.property('status', 'complete');
+							done();
+						}
+					}
+				);
+			}
+		});
 	});
 });

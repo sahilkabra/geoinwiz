@@ -7,7 +7,7 @@ devices: [
 	"description": "Router",
 	location: {
 		type: "Point",
-		"coordinates": [-73.97578941, 40.7614309]
+		"coordinates": [-73.97478941, 40.7624309]
 	}},
 	{
 	"_id": 1,
@@ -16,7 +16,7 @@ devices: [
 	"description": "Router",
 	location: {
 		type: "Point",
-		"coordinates": [-73.97578941, 40.7614309]
+		"coordinates": [-73.97588941, 40.7614309]
 	}},
 	{
 	"_id": 2,
@@ -25,7 +25,7 @@ devices: [
 	"description": "Router",
 	location: {
 		type: "Point",
-		"coordinates": [-73.97578941, 40.7614309]
+		"coordinates": [-73.97578941, 40.7615309]
 	}},
 	{
 	"_id": 3,
@@ -34,7 +34,7 @@ devices: [
 	"description": "Router",
 	location: {
 		type: "Point",
-		"coordinates": [-73.97578941, 40.7614309]
+		"coordinates": [-73.97678941, 40.7644309]
 	}}
 	]
 }});
@@ -42,12 +42,12 @@ db.notifications.update({'_id': 1}, {$set: {
 devices: [
 	{
 	"_id": 0,
-	"type": "Linksys E900",
+	"type": "India Linksys E900",
 	"name": "Router",
 	"description": "Router",
 	location: {
 		type: "Point",
-		"coordinates": [-73.97578941, 40.7614309]
+		"coordinates": [73.97578941, 18.5157]
 	}},
 	{
 	"_id": 1,

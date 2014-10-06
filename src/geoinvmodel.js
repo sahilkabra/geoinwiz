@@ -47,20 +47,22 @@ geoInvModel.getNotificationDetails = function(userId, notificationId, radius, la
 	}
 };
 
-geoInvModel.updateNotification = function(userId, notificationId) {
+geoInvModel.markNotificationAsRead = function(userId, notificationId) {
 	var get = function(resolve, reject) {
 		db.collection('notifications', function(err, connection) {
 			if (err) {
 				reject(err);
 			} else {
 				var query = {
-					"_id": notificationId,
-					"userid": userId
+					"_id": parseInt(notificationId),
+					"userid": parseInt(userId)
 				};
 				connection.update(query, {$set: {"read": true}}, {multi: false}, function(err, count, status) {
+					console.dir(query);
 					if (err) {
 						reject(err);
 					} else {
+						console.log(count);
 						resolve(status);
 					}
 				});
@@ -71,8 +73,54 @@ geoInvModel.updateNotification = function(userId, notificationId) {
 	return new Promise(get);
 };
 
+geoInvModel.updateNotificationStatus = function(userId, notificationId) {
+	var get = function(resolve, reject) {
+		db.collection('notifications', function(err, connection) {
+			if (err) {
+				reject(err);
+			} else {
+				var query = {
+					"_id": parseInt(notificationId),
+					"userid": parseInt(userId)
+				};
+				connection.update(query, {$set: {"status": 'complete'}}, {multi: false}, function(err, count, status) {
+					if (err) {
+						reject(err);
+					} else {
+						console.log(count);
+						resolve(status);
+					}
+				});
+			}
+		});
+	};
+
+	return new Promise(get);
+};
 geoInvModel.updateDevice = function(userId, notificationId, deviceId) {
-	return null;
+	var get = function(resolve, reject) {
+		db.collection('notifications', function(err, connection) {
+			if (err) {
+				reject(err);
+			} else {
+				var query = {
+					"_id": parseInt(notificationId),
+					"devices._id": parseInt(deviceId),
+					"userid": parseInt(userId)
+				};
+				connection.update(query, {$set: {"devices.$.status": 'complete'}}, {multi: false}, function(err, count, status) {
+					console.dir(query);
+					if (err) {
+						reject(err);
+					} else {
+						console.log(count);
+						resolve(status);
+					}
+				});
+			}
+		});
+	};
+	return new Promise(get);
 };
 
 //private methods
@@ -120,7 +168,6 @@ var getDetailsByProximity = function(userId, notificationid, radius, lat, lon) {
 						}
 					};
 					connection.find(nearQuery).toArray(function(err, docs) {
-						console.dir(nearQuery);
 						if (err) {
 							reject(err);
 						} else {
