@@ -9,7 +9,9 @@ var router = require('routes/router');
 var config = require('app/config');
 var app = express();
 var messenger = require('messenger');
+var bodyParser = require('body-parser');
 
+app.use(bodyParser.json());
 app.use(morgan('short'));
 app.use(router);
 //app.use(error);

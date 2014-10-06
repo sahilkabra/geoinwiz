@@ -1,0 +1,5 @@
+{ "_id" : 0, "userid": 1, "type": "upgrade", "description": "Upgrade Device notification", "sla": 48, "read": "true"}
+{ "_id" : 1, userid: 1, type: "upgrade", description: "Upgrade Device notification", sla: 48, read: "false"}
+{ "_id" : 2, userid: 1, type: "upgrade", description: "Upgrade Device notification", sla: 48, read: "true"}
+{ "_id" : 3, userid: 1, type: "faulty", description: "Upgrade Device notification", sla: 48, read: "true"}
+{ "_id" : 4, userid: 1, type: "faulty", description: "Upgrade Device notification", sla: 48, read: "false"}
