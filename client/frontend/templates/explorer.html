@@ -1,0 +1,13 @@
+<ion-view title="GeoInventoryViz">
+  <ion-content padding="true" auto-scrollable="false">
+
+    <div ng-repeat="explorerOptions in explorer">
+      <div class="card" ng-click="displayExploreChoices(explorerOptions.id)">
+        <div class="item item-text-wrap">
+          {{explorerOptions.name}}
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

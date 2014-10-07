@@ -1,0 +1,86 @@
+//To open modal dialog - http://codepen.io/calendee/pen/AHIuh/
+
+<ion-view title="GeoInventoryViz">
+
+  <ion-nav-buttons side="right">
+    <button
+      class="button button-icon button-clear ion-ios7-bell-outline icon-blue"
+      ng-click="showNotificationsModal()"></button>
+
+  </ion-nav-buttons>
+
+  <ion-content padding="true" auto-scrollable="false">
+
+<div ng-if="settings.isProximityBasedSearch">
+  <div class="range">
+    <i class="ion-ios7-ionic-outline"></i>
+    <input type="range" name="volume" min="0" max="10" value="{{slider.rangeValue}}" ng-model="slider.rangeValue">
+  </div>
+
+  <div class="item item-divider">
+      <span ng-cloak>Radius Selected : {{slider.rangeValue}} km</span>
+  </div>
+</div>
+
+  <div class="list card">
+
+  <div class="item item-body maps-container">
+    
+    <div id="map-canvas"></div>
+    
+  </div>
+
+  <div class="item item-body">
+    <div class="list">
+
+      <a class="item item-icon-left item-icon-right" ng-if="notificationClickedOnMap.name">
+        <i class="icon ion-ios7-bell-outline"></i>
+        <span ng-cloak>{{notificationClickedOnMap.type}} : {{notificationClickedOnMap.name}}</span>
+        <p ng-cloak>{{notificationClickedOnMap.description}}</p>
+        <i class="icon ion-ios7-checkmark-outline" ng-class="{markedcomplete : isDeviceStatusComplete}" ng-click="markDeviceDone(notificationClickedOnMap)"></i>
+      </a>
+
+      <a class="item" ng-if="!notificationClickedOnMap.name">
+        <span ng-cloak>No devices selected. Click on the marker in the map to view device details.</span>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+
+<script id="modal.html" type="text/ng-template">
+      <div class="modal">
+        <header class="bar bar-header bar-positive">
+          <h1 class="title">Notifications</h1>
+          <div class="button button-clear" ng-click="modal.hide()"><span class="icon ion-close"></span></div>
+        </header>
+        <content has-header="true" padding="true">
+
+
+
+          <ion-list> 
+          <div class="notificationlist">
+
+            <ion-item ng-repeat="notification in notifications" item="item" can-swipe="true" class="item-icon-left item-icon-right">
+                <i class="icon ion-ios7-bell" ng-class="{notificationread: notification.read, notificationunread: !notification.read}"></i> 
+                <a ng-click="readNotification(notification)">
+
+                  <span ng-cloak><b>{{notification.type}}</b> : {{notification.description}}</span>
+                  <p ng-cloak>Device Count : {{notification.devicecount}}, SLA: {{notification.sla}}</p>
+                  <i class="icon ion-ios7-checkmark-outline" ng-if="notification.status === 'Complete'"></i>
+                </a> 
+
+                <ion-option-button class="button-balanced" ng-click="markNotificationDone(notification)">Mark Done</ion-option-button> 
+            </ion-item> 
+            </div>
+          </ion-list>
+
+    </script>
+
+
+
+
+  </ion-content>
+</ion-view>
