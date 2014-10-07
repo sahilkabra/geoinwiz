@@ -24,13 +24,23 @@ geoinwiz.getNotificationDetails = function (request, response, next) {
 			});
 };
 
-geoinwiz.updateDevice = function (request, response, next) {
-	geoinvmodel.updateDevice(request.userid, request.params.notificationid, request.body.deviceid)
+geoinwiz.getDevicesByProximity = function (request, response, next) {
+	console.dir(geoinvmodel);
+	geoinvmodel.getDevicesByProximity(request.query.radius, request.query.lat, request.query.lng)
+			.then(function(data) {
+				response.json(data);
+			})
+			.catch(function(err) {
+				response.status(500).json(err);
+			});
+};
+
+geoinwiz.updateDeviceStatus = function (request, response, next) {
+	geoinvmodel.updateDeviceStatus(request.params.userid, request.params.deviceid)
 	.then(function(data) {
 		response.json(data);
 	})
 	.catch(function(err) {
-		console.dir(err);
 		response.status(500).json(err);
 	});
 };

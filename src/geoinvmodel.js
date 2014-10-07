@@ -7,7 +7,8 @@ var mongoConfig = appConfig.mongo;
 var appName = appConfig.appName;
 
 var db;
-var collectionName = appName;
+var notificationsCollection = 'notifications';
+var deviceCollection = 'devices';
 
 var geoInvModel = module.exports;
 
@@ -17,7 +18,7 @@ var geoInvModel = module.exports;
  */
 geoInvModel.getUserNotifications = function(userId) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', {strict: true},
+		db.collection(notificationsCollection, {strict: true},
 			function(err, connection) {
 				if (err) {
 					reject(err);
@@ -40,16 +41,12 @@ geoInvModel.getUserNotifications = function(userId) {
 };
 
 geoInvModel.getNotificationDetails = function(userId, notificationId, radius, lat, lon) {
-	if (lat && lon) {
-		return getDetailsByProximity(userId, notificationId, radius? radius: 100000, lat, lon);
-	} else {
-		return getDetailsForNotification(userId, notificationId);
-	}
+	return getDetailsForNotification(userId, notificationId, radius? radius: 100000, lat, lon);
 };
 
 geoInvModel.markNotificationAsRead = function(userId, notificationId) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', function(err, connection) {
+		db.collection(notificationsCollection, function(err, connection) {
 			if (err) {
 				reject(err);
 			} else {
@@ -58,24 +55,21 @@ geoInvModel.markNotificationAsRead = function(userId, notificationId) {
 					"userid": parseInt(userId)
 				};
 				connection.update(query, {$set: {"read": true}}, {multi: false}, function(err, count, status) {
-					console.dir(query);
 					if (err) {
 						reject(err);
 					} else {
-						console.log(count);
 						resolve(status);
 					}
 				});
 			}
 		});
 	};
-
 	return new Promise(get);
 };
 
 geoInvModel.updateNotificationStatus = function(userId, notificationId) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', function(err, connection) {
+		db.collection(notificationsCollection, function(err, connection) {
 			if (err) {
 				reject(err);
 			} else {
@@ -87,34 +81,29 @@ geoInvModel.updateNotificationStatus = function(userId, notificationId) {
 					if (err) {
 						reject(err);
 					} else {
-						console.log(count);
 						resolve(status);
 					}
 				});
 			}
 		});
 	};
-
 	return new Promise(get);
 };
-geoInvModel.updateDevice = function(userId, notificationId, deviceId) {
+
+geoInvModel.updateDeviceStatus = function(userId, deviceId) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', function(err, connection) {
+		db.collection(deviceCollection, function(err, connection) {
 			if (err) {
 				reject(err);
 			} else {
 				var query = {
-					"_id": parseInt(notificationId),
-					"devices._id": parseInt(deviceId),
-					"userid": parseInt(userId)
+					"_id": parseInt(deviceId),
 				};
-				connection.update(query, {$set: {"devices.$.status": 'complete'}}, {multi: false}, function(err, count, status) {
-					console.dir(query);
-					if (err) {
+				connection.update(query, {$set: {'status': 'complete'}}, {multi: false}, function(err, count, status) {
+					if (err || !deviceId) {
 						reject(err);
 					} else {
-						console.log(count);
-						resolve(status);
+						count === 1? resolve(status): reject('No device updated');
 					}
 				});
 			}
@@ -123,10 +112,16 @@ geoInvModel.updateDevice = function(userId, notificationId, deviceId) {
 	return new Promise(get);
 };
 
+geoInvModel.getAllDeviceDetails = function(userId, radius, lat, lon) {
+	return getNotificationDetailsByProximity(userId, undefined, radius? radius: 100000, lat, lon);
+};
+
+
+
 //private methods
-var getDetailsForNotification = function(userId, notificationId) {
+var getDetailsForNotification = function(userId, notificationId, radius, lat, lon) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', {strict: true},
+		db.collection(notificationsCollection, {strict: true},
 			function(err, connection) {
 				if (err) {
 					reject(err);
@@ -135,11 +130,18 @@ var getDetailsForNotification = function(userId, notificationId) {
 						"userid": parseInt(userId),
 						"_id": parseInt(notificationId)
 					};
-					connection.find(query).toArray(function(err, notifications) {
+					connection.findOne(query, function(err, notification) {
 						if (err) {
 							reject(err);
 						} else {
-							resolve(notifications);
+							getDevicesForNotification(radius, lat, lon, notification)
+							.then(function(devices) {
+								notification["devices"] = devices;
+								resolve(notification);
+							})
+							.catch(function(err) {
+								reject(err);
+							});
 						}
 					});
 				}
@@ -149,15 +151,15 @@ var getDetailsForNotification = function(userId, notificationId) {
 	return new Promise(get);
 };
 
-var getDetailsByProximity = function(userId, notificationid, radius, lat, lon) {
+var getDevicesByProximity = function(radius, lat, lon, notification) {
 	var get = function(resolve, reject) {
-		db.collection('notifications', {strict: true},
+		db.collection(deviceCollection, {strict: true},
 			function(err, connection) {
 				if (err) {
 					reject(err);
 				} else {
-					var nearQuery = {
-						"devices.location": {
+					var query = {
+						"location": {
 							$near: {
 								$geometry: {
 									type: 'Point',
@@ -167,12 +169,37 @@ var getDetailsByProximity = function(userId, notificationid, radius, lat, lon) {
 							}
 						}
 					};
-					connection.find(nearQuery).toArray(function(err, docs) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(docs);
-						}
+					if (notification) {
+						query['_id'] = {'$in' : notification.devices};
+					}
+					console.dir(query);
+					connection.find(query).toArray(function(err, devices) {
+						if (err) reject(err);
+						else resolve(devices);
+					});
+				}
+			}
+		);
+	};
+	return new Promise(get);
+};
+
+var getDevicesForNotification = function(radius, lat, lon, notification) {
+	if (lat && lon) {
+		return getDevicesByProximity(radius, lat, lon, notification);
+	}
+	var get = function(resolve, reject) {
+		db.collection(deviceCollection, {strict: true},
+			function(err, connection) {
+				if (err) {
+					reject(err);
+				} else {
+					var query = {
+						'_id': {$in: notification.devices}
+					};
+					connection.find(query).toArray(function(err, devices) {
+						if (err) reject(err);
+						else resolve(devices);
 					});
 				}
 			}
@@ -193,3 +220,5 @@ messenger.once(appName + '.exit', function() {
 	db.close();
 	messenger.emit(appName + '.dbExit');
 });
+
+geoInvModel.getDevicesByProximity = getDevicesByProximity;

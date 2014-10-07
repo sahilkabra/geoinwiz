@@ -22,12 +22,12 @@ describe('The geo inv REST API', function() {
 	it('returns all details of notification when lat and lon are not passed', function(done) {
 		geoInvRESTApi.get('/notifications/1')
 			.expect('Content-Type', /json/)
-			.expect(200)
 			.end(function(err, response) {
 				if (err) done(err);
+				expect(response.status).to.equal(200);
 				expect(response.body).to.be.defined;
-				expect(response.body[0]).to.have.property('devices');
-				expect(response.body[0].devices[0]).to.have.property('type');
+				expect(response.body).to.have.property('devices');
+				expect(response.body.devices[0]).to.have.property('type');
 				done();
 			}
 		);
@@ -43,10 +43,11 @@ describe('The geo inv REST API', function() {
 					.expect('Content-Type', /json/)
 					.expect(200)
 					.end(function(err, response) {
+						expect(response.status).to.equal(200);
 						if (err) done(err);
 						else {
 							expect(response.body).to.be.defined;
-							expect(response.body[0]).to.have.property('read', true);
+							expect(response.body).to.have.property('read', true);
 							done();
 						}
 					}
@@ -54,50 +55,36 @@ describe('The geo inv REST API', function() {
 			}
 		});
 	});
-	it('updates device status', function() {
+	it('updates device status', function(done) {
 		geoInvRESTApi.post('/notifications/1/device/1')
 		.send({'status': 'complete'})
 		.expect(200)
 		.end(function(err, response) {
-			expect(response.status(200));
+			expect(response.status).to.equal(200);
 			if (err)  done(err);
 			else {
-				geoInvRESTApi.get('/notifications/1/device/1')
-					.expect('Content-Type', /json/)
-					.expect(200)
-					.end(function(err, response) {
-						var deviceIndex = 0;
-						if (err) done(err);
-						else {
-							expect(response.body).to.be.defined;
-							for (deviceIndex = 0; deviceIndex < response.body.length; deviceIndex++) {
-								if(response.body[deviceIndex]['_id'] === 1) {
-									expect(response.body[deviceIndex]).to.have.property('status', 'complete');
-									done();
-								}
-							}
-						}
-					}
-				);
+				expect(response.body.n).to.be.defined;
+				expect(response.body.n).to.equal(1);
+				done();
 			}
 		});
 	});
 	it('returns details of notification when lat and lon are passed', function(done) {
-		geoInvRESTApi.get('/notifications/1?radius=1000&lat=40.76&lng=-73.97')
+		geoInvRESTApi.get('/notifications/1?radius=1000&lat=33.67&lng=-84.30')
 			.expect('Content-Type', /json/)
-			.expect(200)
 			.end(function(err, response) {
 				if (err) done(err);
 				else {
+					expect(response.status).to.equal(200);
 					expect(response.body).to.be.defined;
-					expect(response.body[0]).to.have.property('devices');
-					expect(response.body[0].devices[0]).to.have.property('type');
+					expect(response.body).to.have.property('devices');
+					expect(response.body.devices[0]).to.have.property('type');
 					done();
 				}
 			}
 		);
 	});
-	it('updates notification status', function() {
+	it('updates notification status', function(done) {
 		geoInvRESTApi.post('/notifications/1')
 		.send({'status': 'complete'})
 		.expect(200)
@@ -118,5 +105,20 @@ describe('The geo inv REST API', function() {
 				);
 			}
 		});
+	});
+	it('returns devices by proximity', function(done) {
+		geoInvRESTApi.get('/devices?radius=1000&lat=33.67&lng=-84.30')
+			.expect('Content-Type', /json/)
+			.end(function(err, response) {
+				if (err) done(err);
+				else {
+					expect(response.status).to.equal(200);
+					expect(response.body).to.be.defined;
+					expect(response.body).to.have.property('devices');
+					expect(response.body.devices[0]).to.have.property('type');
+					done();
+				}
+			}
+		);
 	});
 });

@@ -1,10 +1,11 @@
-{ "_id" : 1, type: "upgrade", description: "Upgrade Device notification", name: "Device 1", location: {type: 'Point', coordinates: [73.97578941, 18.5157]}}
-{ "_id" : 2, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 3, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 4, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 5, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 6, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 7, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 8, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 9, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
-{ "_id" : 10, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 1, type: "Cisco Aironet", description: "Cisco Aironet Devices", name: "sur01.peachtree.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.393743, 33.749910]}}
+{ "_id" : 2, type: "Motorola SDM", description: "Motorola SDM Devices", name: "ur01.forsyth.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.39443, 33.751427]}}
+{ "_id" : 3, type: "Cisco ASR 9000 Router Series", description: "Cisco ASR 9000 Router Series Devices", name: "sur02.washington.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.389945, 33.748108]}}
+{ "_id" : 4, type: "Juniper TX Matrix Plus Router", description: "Juniper TX Matrix Plus Router", name: "ur02.ormond.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.38104, 33.731514]}}
+{ "_id" : 5, type: "Alcatel OmniAcess 408 Series", description: "Alcatel OmniAcess 408 Series Devices", name: "sur03.altlantaave.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.380976, 33.730318]}}
+{ "_id" : 6, type: "Motorola QB Series", description: "Motorola QB Series Devices", name: "ur03.grandpark.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.376513, 33.732602]}}
+{ "_id" : 7, type: "Belair Wireless Access Point", description: "Belair Wireless Access Point", name: "sr05.carrington.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.297827, 33.673944]}}
+{ "_id" : 8, type: "Ciena ActivEdge 3000 Series", description: "Ciena ActivEdge 3000 Series Devices", name: "sr06.astronautrd.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.302441, 33.674872]}}
+{ "_id" : 9, type: "Nortel Optical Metro", description: "Nortel Optical Metro Devices", name: "sr08.flowerwood.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.306432, 33.670640]}}
+{ "_id" : 10, type: "Nokia IP 380 Series", description: "Nokia IP 380 Series Devices", name: "ur08.telstar.atlanta.amdocs.net", location: {type: 'Point', coordinates: [-84.303364, 33.677068]}}
+

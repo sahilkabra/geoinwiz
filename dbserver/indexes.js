@@ -1,1 +1,1 @@
-db.notifications.ensureIndex({"devices.location": "2dsphere"});
+db.devices.ensureIndex({"location": "2dsphere"});
