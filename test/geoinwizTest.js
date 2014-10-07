@@ -32,32 +32,21 @@ describe('The geo inv REST API', function() {
 			}
 		);
 	});
-	it('updates notification read status', function(done) {
-		geoInvRESTApi.post('/notifications/1')
-		.send({'read': 'true'})
-		.expect(200)
+	it('marks notification as read', function(done) {
+		geoInvRESTApi.get('/notifications/1?read=true')
 		.end(function(err, response) {
 			if (err)  done(err);
 			else {
-				geoInvRESTApi.get('/notifications/1')
-					.expect('Content-Type', /json/)
-					.expect(200)
-					.end(function(err, response) {
-						expect(response.status).to.equal(200);
-						if (err) done(err);
-						else {
-							expect(response.body).to.be.defined;
-							expect(response.body).to.have.property('read', true);
-							done();
-						}
-					}
-				);
+				expect(response.status).to.equal(200);
+				expect(response.body).to.be.defined;
+				expect(response.body).to.have.property('devices');
+				expect(response.body.devices[0]).to.have.property('type');
+				done();
 			}
 		});
 	});
 	it('updates device status', function(done) {
-		geoInvRESTApi.post('/notifications/1/device/1')
-		.send({'status': 'complete'})
+		geoInvRESTApi.get('/notifications/1/device/1?status=complete')
 		.expect(200)
 		.end(function(err, response) {
 			expect(response.status).to.equal(200);
@@ -85,8 +74,7 @@ describe('The geo inv REST API', function() {
 		);
 	});
 	it('updates notification status', function(done) {
-		geoInvRESTApi.post('/notifications/1')
-		.send({'status': 'complete'})
+		geoInvRESTApi.get('/notifications/1?status=complete')
 		.expect(200)
 		.end(function(err, response) {
 			if (err)  done(err);
@@ -114,8 +102,8 @@ describe('The geo inv REST API', function() {
 				else {
 					expect(response.status).to.equal(200);
 					expect(response.body).to.be.defined;
-					expect(response.body).to.have.property('devices');
-					expect(response.body.devices[0]).to.have.property('type');
+					expect(response.body[0]).to.have.property('devices');
+					expect(response.body[0].devices[0]).to.have.property('type');
 					done();
 				}
 			}

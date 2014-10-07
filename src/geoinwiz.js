@@ -19,14 +19,12 @@ geoinwiz.getNotificationDetails = function (request, response, next) {
 				response.json(data);
 			})
 			.catch(function(err) {
-				console.dir(err);
 				response.status(500).json(err);
 			});
 };
 
-geoinwiz.getDevicesByProximity = function (request, response, next) {
-	console.dir(geoinvmodel);
-	geoinvmodel.getDevicesByProximity(request.query.radius, request.query.lat, request.query.lng)
+geoinwiz.getNotificationsByProximity = function (request, response, next) {
+	geoinvmodel.getNotificationsByProximity(request.params.userid, request.query.radius, request.query.lat, request.query.lng)
 			.then(function(data) {
 				response.json(data);
 			})
@@ -46,7 +44,7 @@ geoinwiz.updateDeviceStatus = function (request, response, next) {
 };
 
 geoinwiz.markNotificationAsRead = function(request, response, next) {
-	if (!request.body.read) next();
+	if (!request.query.read) next();
 	else {
 		geoinvmodel.markNotificationAsRead(request.params.userid, request.params.notificationid)
 		.then(function(data) {
@@ -59,9 +57,9 @@ geoinwiz.markNotificationAsRead = function(request, response, next) {
 };
 
 geoinwiz.updateNotificationStatus = function (request, response, next) {
-	if (!request.body.status) next();
+	if (!request.query.status) next();
 	else {
-		geoinvmodel.updateNotificationStatus(request.params.userid, request.params.notificationid, request.body.status)
+		geoinvmodel.updateNotificationStatus(request.params.userid, request.params.notificationid, request.query.status)
 		.then(function(data) {
 			response.json(data);
 		})

@@ -45,6 +45,7 @@ geoInvModel.getNotificationDetails = function(userId, notificationId, radius, la
 };
 
 geoInvModel.markNotificationAsRead = function(userId, notificationId) {
+	var self = this;
 	var get = function(resolve, reject) {
 		db.collection(notificationsCollection, function(err, connection) {
 			if (err) {
@@ -54,11 +55,12 @@ geoInvModel.markNotificationAsRead = function(userId, notificationId) {
 					"_id": parseInt(notificationId),
 					"userid": parseInt(userId)
 				};
+				console.log('mark as read');
 				connection.update(query, {$set: {"read": true}}, {multi: false}, function(err, count, status) {
 					if (err) {
 						reject(err);
 					} else {
-						resolve(status);
+						resolve(self.getNotificationDetails(userId, notificationId));
 					}
 				});
 			}
@@ -116,9 +118,78 @@ geoInvModel.getAllDeviceDetails = function(userId, radius, lat, lon) {
 	return getNotificationDetailsByProximity(userId, undefined, radius? radius: 100000, lat, lon);
 };
 
-
+geoInvModel.getNotificationsByProximity = function(userId, radius, lat, lon) {
+	var get = function(resolve, reject) {
+		getDevicesByProximity(radius, lat, lon)
+		.then(function(devices) {
+			var deviceIndex = 0;
+			var deviceId = [];
+			for (deviceIndex = 0; deviceIndex < devices.length; deviceIndex++) {
+				deviceId.push(devices[deviceIndex]['_id']);
+			}
+			getNotificationsByDeviceId(userId, deviceId).then(function(notifications) {
+				var index = 0;
+				var dIndex = 0;
+				var nIndex = 0;
+				var notification;
+				//Iterated through notifications replacing device ids with device objects
+				for (index = 0; index < notifications.length; index++) {
+					notification = notifications[index];
+					for (dIndex = 0; dIndex < devices.length; dIndex++) {
+						nIndex = notification.devices.indexOf(devices[dIndex]['_id']);
+						if (nIndex != -1) {
+							notification.devices[nIndex] = devices[dIndex];
+						}
+					}
+				}
+				//iterate through notifications removing all elements that are only number
+				for(index = 0; index < notifications.length; index++) {
+					var newDevices = [];
+					var oldDevices = notifications[index].devices;
+					for(dIndex = 0; dIndex < oldDevices.length; dIndex++) {
+						if (typeof oldDevices[dIndex]['_id'] != 'undefined') {
+							newDevices.push(oldDevices[dIndex]);
+						}
+					}
+					notifications[index].devices = newDevices.slice();
+					newDevices.length = 0;
+				}
+				resolve(notifications);
+			})
+			.catch(function(err) {
+				reject(err);
+			});
+		})
+		.catch(function(err) {
+			reject(err);
+		});
+	};
+	return new Promise(get);
+};
 
 //private methods
+var getNotificationsByDeviceId = function(userId, deviceIds) {
+	var get = function(resolve, reject) {
+		db.collection(notificationsCollection, {strict: true},
+			function(err, connection) {
+				if (err) {
+					reject(err);
+				} else {
+					var query = {
+						"userid": parseInt(userId),
+						'devices': {'$in': deviceIds}
+					};
+					connection.find(query).toArray(function(err, notifications) {
+						if (err) reject(err);
+						else resolve(notifications);
+					});
+				}
+			}
+		);
+	};
+	return new Promise(get);
+};
+
 var getDetailsForNotification = function(userId, notificationId, radius, lat, lon) {
 	var get = function(resolve, reject) {
 		db.collection(notificationsCollection, {strict: true},
@@ -172,7 +243,6 @@ var getDevicesByProximity = function(radius, lat, lon, notification) {
 					if (notification) {
 						query['_id'] = {'$in' : notification.devices};
 					}
-					console.dir(query);
 					connection.find(query).toArray(function(err, devices) {
 						if (err) reject(err);
 						else resolve(devices);
@@ -220,5 +290,3 @@ messenger.once(appName + '.exit', function() {
 	db.close();
 	messenger.emit(appName + '.dbExit');
 });
-
-geoInvModel.getDevicesByProximity = getDevicesByProximity;
