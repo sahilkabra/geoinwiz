@@ -1,0 +1,10 @@
+{ "_id" : 1, type: "upgrade", description: "Upgrade Device notification", name: "Device 1", location: {type: 'Point', coordinates: [73.97578941, 18.5157]}}
+{ "_id" : 2, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 3, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 4, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 5, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 6, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 7, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 8, type: "upgrade", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 9, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
+{ "_id" : 10, type: "faulty", description: "Upgrade Device notification", name: "Device 2", location: {type: 'Point', coordinates: [-73.97578941, 40.7614309]}}
